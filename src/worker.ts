@@ -21,7 +21,7 @@ const TRIGGERS: readonly Trigger[] = [
   { hour: 18, temp: 33 },
 ];
 
-const isAlreadyRun = async (date: string, kv: KVNamespace) => kv.get(date).then((v) => !!v);
+const isAlreadyTurnedOnToday = async (date: string, kv: KVNamespace) => kv.get(date).then((v) => !!v);
 
 const worker: ExportedHandler<Env> = {
   async scheduled(_cont, env) {
@@ -29,7 +29,7 @@ const worker: ExportedHandler<Env> = {
     if (isWeekend(zoned.getDay()) || isHoliday(zoned)) return;
     if (isBannedHour(zoned.getHours())) return;
     const formattedDate = formatDate(zoned);
-    if (await isAlreadyRun(formattedDate, env.TURN_ON_AIR_CON_HISTORY)) return;
+    if (await isAlreadyTurnedOnToday(formattedDate, env.TURN_ON_AIR_CON_HISTORY)) return;
 
     const triggerTemp = findValidTrigger(TRIGGERS, zoned.getHours())?.temp;
     if (!triggerTemp) return;
