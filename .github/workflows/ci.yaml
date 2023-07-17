@@ -11,15 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Get node version from Volta
-        id: get-node-version
-        uses: keita-hino/get-node-version-from-volta@main
-      - uses: actions/setup-node@v3
-        with:
-          node-version: ${{ steps.get-node-version.outputs.nodeVersion }}
-          cache: npm
-      - name: Install dependencies
-        run: npm install
+      - name: Setup Node.js with Volta
+        uses: ./.github/actions/setup-node
       - name: Lint
         run: npm run lint
       - name: Format
