@@ -25,13 +25,13 @@ const isAlreadyTurnedOnToday = async (date: string, kv: KVNamespace) => kv.get(d
 
 const worker: ExportedHandler<Env> = {
   async scheduled(_cont, env) {
-    const zoned = utcToZonedTime(new Date(), TIME_ZONE);
-    if (isWeekend(zoned.getDay()) || isHoliday(zoned)) return;
-    if (isBannedHour(zoned.getHours())) return;
-    const formattedDate = formatDate(zoned);
+    const now = utcToZonedTime(new Date(), TIME_ZONE);
+    if (isWeekend(now.getDay()) || isHoliday(now)) return;
+    if (isBannedHour(now.getHours())) return;
+    const formattedDate = formatDate(now);
     if (await isAlreadyTurnedOnToday(formattedDate, env.TURN_ON_AIR_CON_HISTORY)) return;
 
-    const triggerTemp = findValidTrigger(TRIGGERS, zoned.getHours())?.temp;
+    const triggerTemp = findValidTrigger(TRIGGERS, now.getHours())?.temp;
     if (!triggerTemp) return;
 
     const client = new SwitchBotClient(env.SWITCHBOT_TOKEN, env.SWITCHBOT_CLIENT_SECRET);
