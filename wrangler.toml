@@ -1,0 +1,18 @@
+name = "turn-on-air-conditioner"
+main = "src/worker.ts"
+compatibility_date = "2023-05-15"
+compatibility_flags = ["nodejs_compat"]
+kv_namespaces = [
+  { binding = "TURN_ON_AIR_CON_HISTORY", id = "bba089aad49e45ff9ec9937015b8b07f", preview_id = "1192062622004861a04c3348dea32915" }
+]
+
+[vars]
+METER_DEVICE_ID = "DC49091D8404"
+AIR_CONDITIONER_DEVICE_ID = "02-202306140644-28427602"
+
+# Cron Triggers
+# Docs: https://developers.cloudflare.com/workers/platform/triggers/cron-triggers/
+# Configuration: https://developers.cloudflare.com/workers/wrangler/configuration/#triggers
+[triggers]
+# 15分ごとに実行する
+crons = ["*/15 * * * *"]

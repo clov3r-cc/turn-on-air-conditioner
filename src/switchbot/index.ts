@@ -1,0 +1,1 @@
+export { SwitchBotClient } from './client';
