@@ -7,7 +7,9 @@ jobs:
   ci:
     uses: Lucky3028/turn-on-air-conditioner/.github/workflows/ci.yaml@main
   cd:
+    name: Deploy to Cloudflare Workers
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     needs:
       - ci
     steps:
