@@ -1,10 +1,10 @@
 import { format } from 'date-fns-tz';
 
 export const isWeekend = (dayOfWeek: number) => {
-	const isSaturday = dayOfWeek === 6;
-	const isSunday = dayOfWeek === 0;
+  const isSaturday = dayOfWeek === 6;
+  const isSunday = dayOfWeek === 0;
 
-	return isSaturday || isSunday;
+  return isSaturday || isSunday;
 };
 
 export const isBannedHour = (hour: number) => 0 <= hour && hour <= 6;
