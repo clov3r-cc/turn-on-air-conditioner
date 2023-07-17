@@ -7,6 +7,6 @@ export const isWeekend = (dayOfWeek: number) => {
   return isSaturday || isSunday;
 };
 
-export const isBannedHour = (hour: number) => 0 <= hour && hour <= 6;
+export const isBannedHour = (hour: number) => hour >= 0 && hour <= 6;
 
 export const formatDate = (date: Date) => format(date, 'yyyy-MM-dd');

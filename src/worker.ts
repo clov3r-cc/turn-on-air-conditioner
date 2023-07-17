@@ -5,12 +5,12 @@ import { type Trigger, findValidTrigger } from './pair';
 import { SwitchBotClient } from './switchbot';
 
 export type Env = {
-	TURN_ON_AIR_CON_HISTORY: KVNamespace;
+  TURN_ON_AIR_CON_HISTORY: KVNamespace;
 
-	SWITCHBOT_TOKEN: string;
-	SWITCHBOT_CLIENT_SECRET: string;
-	METER_DEVICE_ID: string;
-	AIR_CONDITIONER_DEVICE_ID: string;
+  SWITCHBOT_TOKEN: string;
+  SWITCHBOT_CLIENT_SECRET: string;
+  METER_DEVICE_ID: string;
+  AIR_CONDITIONER_DEVICE_ID: string;
 };
 
 const TIME_ZONE = 'Asia/Tokyo';
@@ -21,7 +21,7 @@ const TRIGGERS: readonly Trigger[] = [
   { hour: 18, temp: 33 },
 ];
 
-const isAlreadyRun = async (date: string, kv: KVNamespace) => await kv.get(date).then((v) => !!v);
+const isAlreadyRun = async (date: string, kv: KVNamespace) => kv.get(date).then((v) => !!v);
 
 const worker: ExportedHandler<Env> = {
   async scheduled(_cont, env) {

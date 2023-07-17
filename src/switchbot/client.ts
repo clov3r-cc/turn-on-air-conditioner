@@ -5,7 +5,9 @@ import { HttpError } from './error';
 
 export class SwitchBotClient {
   private readonly url = 'https://api.switch-bot.com/v1.1/devices';
+
   private readonly token: string;
+
   private readonly secret: string;
 
   constructor(token: string, secret: string) {
@@ -33,33 +35,33 @@ export class SwitchBotClient {
 
     return this.postRequest(path, data)
       .then(async (res) => res.json())
-      .then((data) => controlCommandResponse.parse(data));
+      .then((json) => controlCommandResponse.parse(json));
   };
 
-  private generateSign = async (token: string, secret: string, t: number, nonce: string) => {
-    const data = `${token}${t}${nonce}`;
-    const secretKeyData = new TextEncoder().encode(secret);
+  private generateSign = async (t: number, nonce: string) => {
+    const data = `${this.token}${t}${nonce}`;
+    const secretKeyData = new TextEncoder().encode(this.secret);
     const key = await crypto.subtle.importKey('raw', secretKeyData, { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
     const signTerm = await crypto.subtle.sign('HMAC', key, Buffer.from(data, 'utf-8'));
 
     return encode(signTerm);
   };
 
-  private generateAuthorizationHeader = async (token: string, secret: string) => {
+  private generateAuthorizationHeader = async () => {
     const t = Date.now();
     const nonce = crypto.randomUUID();
-    const sign = await this.generateSign(token, secret, t, nonce);
+    const sign = await this.generateSign(t, nonce);
 
     return {
-      Authorization: token,
-      sign: sign,
-      nonce: nonce,
+      Authorization: this.token,
+      sign,
+      nonce,
       t: t.toString(),
     };
   };
 
   private getRequest = async (path?: string) => {
-    const authHeader = await this.generateAuthorizationHeader(this.token, this.secret);
+    const authHeader = await this.generateAuthorizationHeader();
     const response = await fetch(`${this.url}/${path ?? ''}`, {
       method: 'GET',
       headers: { ...authHeader },
@@ -70,7 +72,7 @@ export class SwitchBotClient {
   };
 
   private postRequest = async (path: string, data: unknown) => {
-    const authHeader = await this.generateAuthorizationHeader(this.token, this.secret);
+    const authHeader = await this.generateAuthorizationHeader();
     const response = await fetch(`${this.url}/${path}`, {
       method: 'POST',
       headers: { ...authHeader, 'Content-Type': 'application/json' },

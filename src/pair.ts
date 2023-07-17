@@ -1,6 +1,6 @@
 export type Trigger = {
-	hour: number;
-	temp: number;
+  hour: number;
+  temp: number;
 };
 
 export const findValidTrigger = (source: readonly Trigger[], hour: number) => {
