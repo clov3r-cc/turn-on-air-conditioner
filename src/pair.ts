@@ -3,6 +3,12 @@ export type Trigger = {
   temp: number;
 };
 
+/**
+ * 現在時刻を過ぎたトリガーをすべて返す。時刻が等しいものは気温がより低い方を含む。
+ * @param source 元となるトリガーの配列
+ * @param nowHour 現在時刻（時）
+ * @returns 現在時刻を過ぎたトリガーの配列
+ */
 export const filterValidTrigger = (source: readonly Trigger[], nowHour: number) => {
   // TODO: #toSortedを使いたいが未実装のようなので、破壊的メソッドである#sortを使うため、スプレッド構文で別の配列を作成
   const copiedSource = [...source];

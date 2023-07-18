@@ -21,6 +21,12 @@ const TRIGGERS: readonly Trigger[] = [
   { hour: 18, temp: 33 },
 ];
 
+/**
+ * 与えられた日付においてエアコンをすでにこのプログラムによってつけたかどうかを返す
+ * @param date 確認したい日付
+ * @param kv Cloudflare KVのインスタンス
+ * @returns 与えられた日付においてエアコンをすでにこのプログラムによってつけたかどうか
+ */
 const isAlreadyTurnedOnToday = async (date: string, kv: KVNamespace) => kv.get(date).then((v) => !!v);
 
 const worker: ExportedHandler<Env> = {
