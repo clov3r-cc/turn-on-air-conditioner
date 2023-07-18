@@ -30,7 +30,7 @@ const TRIGGERS: readonly Trigger[] = [
 const isAlreadyTurnedOnToday = async (date: string, kv: KVNamespace) => kv.get(date).then((v) => !!v);
 
 const worker: ExportedHandler<Env> = {
-  async scheduled(cont, env, ctx) {
+  async scheduled(_ctrl, env, ctx) {
     const now = utcToZonedTime(new Date(), TIME_ZONE);
     if (isWeekend(now.getDay()) || isHoliday(now)) return;
     if (isBannedHour(now.getHours())) return;
