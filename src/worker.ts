@@ -46,7 +46,8 @@ const worker: ExportedHandler<Env> = {
     if (!isTempHigherThanTriggers) return;
 
     ctx.waitUntil(client.turnOnAirConditioner(env.AIR_CONDITIONER_DEVICE_ID, 28));
-    ctx.waitUntil(env.TURN_ON_AIR_CON_HISTORY.put(formattedDate, 'done!'));
+    // 1日でKVに書き込んだものを削除
+    ctx.waitUntil(env.TURN_ON_AIR_CON_HISTORY.put(formattedDate, 'done!', { expirationTtl: 60 * 60 * 24 }));
   },
 };
 
