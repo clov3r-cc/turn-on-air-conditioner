@@ -30,7 +30,7 @@ const TRIGGERS: readonly Trigger[] = [
 const isAlreadyTurnedOnToday = async (date: string, kv: KVNamespace) => kv.get(date).then((v) => !!v);
 
 const worker: ExportedHandler<Env> = {
-  async scheduled(_cont, env) {
+  async scheduled(cont, env, ctx) {
     const now = utcToZonedTime(new Date(), TIME_ZONE);
     if (isWeekend(now.getDay()) || isHoliday(now)) return;
     if (isBannedHour(now.getHours())) return;
@@ -45,8 +45,8 @@ const worker: ExportedHandler<Env> = {
     const isTempHigherThanTriggers = !!triggerTemps.find((triggerTemp) => actualTemp >= triggerTemp);
     if (!isTempHigherThanTriggers) return;
 
-    await client.turnOnAirConditioner(env.AIR_CONDITIONER_DEVICE_ID, 28);
-    env.TURN_ON_AIR_CON_HISTORY.put(formattedDate, 'done!');
+    ctx.waitUntil(client.turnOnAirConditioner(env.AIR_CONDITIONER_DEVICE_ID, 28));
+    ctx.waitUntil(env.TURN_ON_AIR_CON_HISTORY.put(formattedDate, 'done!'));
   },
 };
 
