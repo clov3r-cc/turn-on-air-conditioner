@@ -1,7 +1,7 @@
 import { utcToZonedTime } from 'date-fns-tz';
 import { isHoliday } from '@holiday-jp/holiday_jp';
 import { formatDate, isBannedHour, isWeekend } from './date';
-import { type Trigger, findValidTrigger } from './pair';
+import { filterValidTrigger, type Trigger } from './pair';
 import { SwitchBotClient } from './switchbot';
 
 export type Env = {
@@ -31,12 +31,13 @@ const worker: ExportedHandler<Env> = {
     const formattedDate = formatDate(now);
     if (await isAlreadyTurnedOnToday(formattedDate, env.TURN_ON_AIR_CON_HISTORY)) return;
 
-    const triggerTemp = findValidTrigger(TRIGGERS, now.getHours())?.temp;
-    if (!triggerTemp) return;
+    const triggerTemps = [...new Set(filterValidTrigger(TRIGGERS, now.getHours()).map((t) => t.temp))];
+    if (triggerTemps.length === 0) return;
 
     const client = new SwitchBotClient(env.SWITCHBOT_TOKEN, env.SWITCHBOT_CLIENT_SECRET);
     const actualTemp = await client.getMeterStatus(env.METER_DEVICE_ID).then((stat) => stat.temperature);
-    if (actualTemp < triggerTemp) return;
+    const isTempHigherThanTriggers = !!triggerTemps.find((triggerTemp) => actualTemp >= triggerTemp);
+    if (!isTempHigherThanTriggers) return;
 
     await client.turnOnAirConditioner(env.AIR_CONDITIONER_DEVICE_ID, 28);
     env.TURN_ON_AIR_CON_HISTORY.put(formattedDate, 'done!');
