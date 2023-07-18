@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { findValidTrigger, type Trigger } from './pair';
+import { filterValidTrigger, type Trigger } from './pair';
 
 const TRIGGERS: readonly Trigger[] = [
   { hour: 16, temp: 38 },
@@ -7,33 +7,32 @@ const TRIGGERS: readonly Trigger[] = [
   { hour: 18, temp: 33 },
 ];
 
-describe('findValidTrigger', () => {
-  it('should return a falsy value when given an empty array', () => {
-    expect(findValidTrigger([], 0)).toBeUndefined();
+describe('filterValidTrigger', () => {
+  it('should return an empty array when no given triggers', () => {
+    expect(filterValidTrigger([], 0)).toEqual([]);
   });
 
-  it('should return a falsy value when no matches', () => {
-    expect(findValidTrigger(TRIGGERS, 0)).toBeUndefined();
+  it('should return an empty array when no matches', () => {
+    expect(filterValidTrigger(TRIGGERS, 0)).toEqual([]);
   });
 
-  it.each([16, 17, 18, 19])('should return the earliest pair when now hour is %i', (now) => {
-    const HOUR = 16;
-    const expected = TRIGGERS.find((p) => p.hour === HOUR);
-    expect(expected).toBeDefined();
-    expect(findValidTrigger(TRIGGERS, now)).toBe(expected);
+  it.each([16, 17, 18, 19])('should return all matched pairs when now hour is %i', (now) => {
+    const expected = TRIGGERS.filter((p) => now >= p.hour);
+    expect(filterValidTrigger(TRIGGERS, now)).toEqual(expected);
   });
 
-  it('should return a pair which has lower temp when given an array which has a duplicated hour element', () => {
-    const HOUR = 16;
+  it('should return all matched pairs which contains each pair whose temp is lower, when given an array which has a duplicated hour element', () => {
+    const HOUR = 17;
 
-    const expected = TRIGGERS.find((p) => p.hour === HOUR);
-    expect(expected).toBeDefined();
+    const lowerTempPair = TRIGGERS.find((p) => p.hour === HOUR);
+    expect(lowerTempPair).toBeDefined();
 
-    const e = { ...expected! };
-    e.temp = 100;
-    expect(e.temp).not.toBe(expected!.temp);
+    const higherTempPair = { ...lowerTempPair! };
+    higherTempPair.temp = 100;
+    expect(higherTempPair.temp).not.toBe(lowerTempPair!.temp);
 
-    const map: readonly Trigger[] = [...TRIGGERS, e];
-    expect(findValidTrigger(map, HOUR)).toBe(expected);
+    const map: readonly Trigger[] = [...TRIGGERS, higherTempPair];
+    expect(filterValidTrigger(map, HOUR)).toContain(lowerTempPair);
+    expect(filterValidTrigger(map, HOUR)).not.toContain(higherTempPair);
   });
 });
