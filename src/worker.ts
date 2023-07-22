@@ -29,26 +29,30 @@ const TRIGGERS: readonly Trigger[] = [
  */
 const isAlreadyTurnedOnToday = async (date: string, kv: KVNamespace) => kv.get(date).then((v) => !!v);
 
-const worker: ExportedHandler<Env> = {
-  async scheduled(_ctrl, env, ctx) {
-    const now = utcToZonedTime(new Date(), TIME_ZONE);
-    if (isWeekend(now.getDay()) || isHoliday(now)) return;
-    if (isBannedHour(now.getHours())) return;
-    const formattedDate = formatDate(now);
-    if (await isAlreadyTurnedOnToday(formattedDate, env.TURN_ON_AIR_CON_HISTORY)) return;
+type Handler = ExportedHandler<Env>;
 
-    const triggerTemps = [...new Set(filterValidTrigger(TRIGGERS, now.getHours()).map((t) => t.temp))];
-    if (triggerTemps.length === 0) return;
+const scheduled: Handler['scheduled'] = async (_cont, env, ctx) => {
+  const now = utcToZonedTime(new Date(), TIME_ZONE);
+  if (isWeekend(now.getDay()) || isHoliday(now)) return;
+  if (isBannedHour(now.getHours())) return;
+  const formattedDate = formatDate(now);
+  if (await isAlreadyTurnedOnToday(formattedDate, env.TURN_ON_AIR_CON_HISTORY)) return;
 
-    const client = new SwitchBotClient(env.SWITCHBOT_TOKEN, env.SWITCHBOT_CLIENT_SECRET);
-    const actualTemp = await client.getMeterStatus(env.METER_DEVICE_ID).then((stat) => stat.temperature);
-    const isTempHigherThanTriggers = !!triggerTemps.find((triggerTemp) => actualTemp >= triggerTemp);
-    if (!isTempHigherThanTriggers) return;
+  const triggerTemps = [...new Set(filterValidTrigger(TRIGGERS, now.getHours()).map((t) => t.temp))];
+  if (triggerTemps.length === 0) return;
 
-    ctx.waitUntil(client.turnOnAirConditioner(env.AIR_CONDITIONER_DEVICE_ID, 28));
-    // 1日でKVに書き込んだものを削除
-    ctx.waitUntil(env.TURN_ON_AIR_CON_HISTORY.put(formattedDate, 'done!', { expirationTtl: 60 * 60 * 24 }));
-  },
+  const client = new SwitchBotClient(env.SWITCHBOT_TOKEN, env.SWITCHBOT_CLIENT_SECRET);
+  const actualTemp = await client.getMeterStatus(env.METER_DEVICE_ID).then((stat) => stat.temperature);
+  const isTempHigherThanTriggers = !!triggerTemps.find((triggerTemp) => actualTemp >= triggerTemp);
+  if (!isTempHigherThanTriggers) return;
+
+  ctx.waitUntil(client.turnOnAirConditioner(env.AIR_CONDITIONER_DEVICE_ID, 28));
+  // 1日でKVに書き込んだものを削除
+  ctx.waitUntil(env.TURN_ON_AIR_CON_HISTORY.put(formattedDate, 'done!', { expirationTtl: 60 * 60 * 24 }));
 };
 
-export default worker;
+const app: Handler = {
+  scheduled,
+};
+
+export default app;
