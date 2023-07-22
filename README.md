@@ -28,21 +28,21 @@
 1. [SwitchBotのアプリをスマートフォンにインストールして、APIトークンとクライアントシークレットの値を控える](https://github.com/OpenWonderLabs/SwitchBotAPI#getting-started)
 1. Cloudflare AccessのServiceTokenを取得して控える
 1. [.dev.vars.example](./.dev.vars.example)を`.dev.vars`に改名の上、先程取得したSwitchBotのAPIトークンとクライアントシークレット、CloudflareのServiceTokenを入力する
-1. wranglerをインストール
+1. wranglerをインストール  
   ```npm install -g wrangler@2```
-1. Cloudflareにwranglerからログインする
+1. Cloudflareにwranglerからログインする  
   ```wrangler login```
 1. `wrangler whoami`を実行して表示されるCloudflareのアカウントIDを[wrangler.toml](./wrangler.toml)の`account_id`に入力する
-1. Cloudflare KVにnamespaceを作成
+1. Cloudflare KVにnamespaceを作成  
   ```wrangler kv:namespace create "TURN_ON_AIR_CON_HISTORY"```
-1. Cloudflare KVにnamespaceを作成（デバッグ用なのでなくてもよい）
+1. Cloudflare KVにnamespaceを作成（デバッグ用なのでなくてもよい）  
   ```wrangler kv:namespace create --preview "TURN_ON_AIR_CON_HISTORY"```
 1. デバイスの一覧から温湿度計（`Meter`）とエアコン（`Air Conditioner`）の`deviceId`を探し、[wrangler.toml](./wrangler.toml)の`METER_DEVICE_ID`と`AIR_CONDITIONER_DEVICE_ID`にそれぞれ入力する
 1. SentryのDSNをサイトから取得し、[wrangler.toml](./wrangler.toml)の`SENTRY_DSN`に入力する
 1. [worker.ts](./src/worker.ts)の中にある`TRIGGERS`の値を好きなように変更する
 1. `npm run deploy`で、Cloudflare上にデプロイされる
 
-※ デバイスの一覧表示のコマンドと結果例は以下のような感じ（[yq](https://github.com/mikefarah/yq)によって結果は整形済み）
+※ デバイスの一覧表示のコマンドと結果例は以下のような感じ（[yq](https://github.com/mikefarah/yq)によって結果は整形済み）  
 ```$ curl -X GET "https://api.switch-bot.com/v1.0/devices" -H "Authorization: <your token>"```
 
 ```yaml
