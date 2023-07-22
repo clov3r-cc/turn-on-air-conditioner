@@ -13,10 +13,10 @@ export type Env = {
   METER_DEVICE_ID: string;
   AIR_CONDITIONER_DEVICE_ID: string;
   SENTRY_DSN: string;
-  ENVIRONMENT: 'production' | 'dev';
   // endregion
 
   // region GitHubの秘密変数に設定があって、GitHubActionsによって注入されている環境変数
+  NODE_ENV: 'production' | 'dev';
   SWITCHBOT_TOKEN: string;
   SWITCHBOT_CLIENT_SECRET: string;
   SENTRY_CLIENT_ID: string;
@@ -94,7 +94,7 @@ const scheduled: Handler['scheduled'] = async (cont, env, context) => {
     context.waitUntil(env.TURN_ON_AIR_CON_HISTORY.put(formattedDate, 'done!', { expirationTtl: 60 * 60 * 24 }));
     context.waitUntil(notifyAirConditionerOnToDiscord(env.NOTIFICATION_WEBHOOK_URL, now, actualTemp));
   } catch (e: unknown) {
-    if (e instanceof Error && env.ENVIRONMENT === 'production') {
+    if (e instanceof Error && env.NODE_ENV === 'production') {
       sentry.captureException(e);
     }
   }
