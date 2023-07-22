@@ -8,7 +8,7 @@ import { SwitchBotClient } from './switchbot';
 export type Env = {
   TURN_ON_AIR_CON_HISTORY: KVNamespace;
 
-  // region wrangler.tpmlに直接書き込まれている環境変数
+  // region wrangler.tomlに直接書き込まれている環境変数
   METER_DEVICE_ID: string;
   AIR_CONDITIONER_DEVICE_ID: string;
   SENTRY_DSN: string;
@@ -32,10 +32,10 @@ const TRIGGERS: readonly Trigger[] = [
 ];
 
 /**
- * 与えられた日付においてエアコンをすでにこのプログラムによってつけたかどうかを返す
+ * 与えられた日付において、本プログラムによってエアコンがつけられたかどうかを返す
  * @param date 確認したい日付
  * @param kv Cloudflare KVのインスタンス
- * @returns 与えられた日付においてエアコンをすでにこのプログラムによってつけたかどうか
+ * @returns 与えられた日付において、本プログラムによってエアコンがつけられたかどうか
  */
 const isAlreadyTurnedOnToday = async (date: string, kv: KVNamespace) => kv.get(date).then((v) => !!v);
 
