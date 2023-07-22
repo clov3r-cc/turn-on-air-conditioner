@@ -92,10 +92,8 @@ const scheduled: Handler['scheduled'] = async (cont, env, context) => {
     // 1日でKVに書き込んだものを削除
     context.waitUntil(env.TURN_ON_AIR_CON_HISTORY.put(formattedDate, 'done!', { expirationTtl: 60 * 60 * 24 }));
   } catch (e: unknown) {
-    if (e instanceof Error) {
-      if (env.ENVIRONMENT === 'production') {
-        sentry.captureException(e);
-      }
+    if (e instanceof Error && env.ENVIRONMENT === 'production') {
+      sentry.captureException(e);
     }
   }
 };
