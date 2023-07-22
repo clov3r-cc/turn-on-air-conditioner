@@ -1,7 +1,7 @@
 import { encode } from 'base64-arraybuffer';
 import { Buffer } from 'node:buffer';
 import { meterStatusResponse, type AirConditionerCommand, controlCommandResponse } from './zodSchema';
-import { HttpError } from './error';
+import { HttpError } from '../error';
 
 export class SwitchBotClient {
   private readonly url = 'https://api.switch-bot.com/v1.1/devices';
