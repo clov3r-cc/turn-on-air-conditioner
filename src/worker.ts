@@ -4,6 +4,7 @@ import Toucan from 'toucan-js';
 import { formatDate, isBannedHour, isWeekend } from './date';
 import { filterValidTrigger, type Trigger } from './pair';
 import { SwitchBotClient } from './switchbot';
+import { notifyAirConditionerOnToDiscord } from './discord';
 
 export type Env = {
   TURN_ON_AIR_CON_HISTORY: KVNamespace;
@@ -20,6 +21,7 @@ export type Env = {
   SWITCHBOT_CLIENT_SECRET: string;
   SENTRY_CLIENT_ID: string;
   SENTRY_CLIENT_SECRET: string;
+  NOTIFICATION_WEBHOOK_URL: string;
   // endregion
 };
 
@@ -91,6 +93,7 @@ const scheduled: Handler['scheduled'] = async (cont, env, context) => {
     context.waitUntil(client.turnOnAirConditioner(env.AIR_CONDITIONER_DEVICE_ID, 28));
     // 1日でKVに書き込んだものを削除
     context.waitUntil(env.TURN_ON_AIR_CON_HISTORY.put(formattedDate, 'done!', { expirationTtl: 60 * 60 * 24 }));
+    context.waitUntil(notifyAirConditionerOnToDiscord(env.NOTIFICATION_WEBHOOK_URL, now, actualTemp));
   } catch (e: unknown) {
     if (e instanceof Error && env.ENVIRONMENT === 'production') {
       sentry.captureException(e);
