@@ -25,3 +25,10 @@ export const isBannedHour = (hour: number) => hour >= 0 && hour <= 6;
  * @returns 'yyyy-MM-dd'形式にフォーマットした文字列
  */
 export const formatDate = (date: Date) => format(date, 'yyyy-MM-dd');
+
+/**
+ * `Date`をフォーマットした日時の文字列を返す。JSTのタイムゾーン付き。
+ * @param date フォーマットする日時
+ * @returns 'yyyy-MM-ddTHH:mm+09:00'形式にフォーマットした文字列
+ */
+export const formatJstDateTime = (date: Date) => format(date, 'yyyy-MM-ddTHH:mm+09:00');
