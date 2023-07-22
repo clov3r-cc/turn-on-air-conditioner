@@ -12,6 +12,10 @@ kv_namespaces = [
 METER_DEVICE_ID = "DC49091D8404"
 AIR_CONDITIONER_DEVICE_ID = "02-202306140644-28427602"
 SENTRY_DSN = "https://3d6ae463eda14e208be8eafc6af837fa@sentry.celesteria.net/2"
+ENVIRONMENT = "dev"
+
+[env.production]
+vars = { ENVIRONMENT = "production" }
 
 [triggers]
 # 15分ごとに実行する

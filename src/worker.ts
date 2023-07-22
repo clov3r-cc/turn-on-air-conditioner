@@ -8,14 +8,19 @@ import { SwitchBotClient } from './switchbot';
 export type Env = {
   TURN_ON_AIR_CON_HISTORY: KVNamespace;
 
+  // region wrangler.tpmlに直接書き込まれている環境変数
+  METER_DEVICE_ID: string;
+  AIR_CONDITIONER_DEVICE_ID: string;
+  SENTRY_DSN: string;
+  ENVIRONMENT: 'production' | 'dev';
+  // endregion
+
+  // region GitHubの秘密変数に設定があって、GitHubActionsによって注入されている環境変数
   SWITCHBOT_TOKEN: string;
   SWITCHBOT_CLIENT_SECRET: string;
   SENTRY_CLIENT_ID: string;
   SENTRY_CLIENT_SECRET: string;
-
-  METER_DEVICE_ID: string;
-  AIR_CONDITIONER_DEVICE_ID: string;
-  SENTRY_DSN: string;
+  // endregion
 };
 
 const TIME_ZONE = 'Asia/Tokyo';
@@ -88,7 +93,9 @@ const scheduled: Handler['scheduled'] = async (cont, env, context) => {
     context.waitUntil(env.TURN_ON_AIR_CON_HISTORY.put(formattedDate, 'done!', { expirationTtl: 60 * 60 * 24 }));
   } catch (e: unknown) {
     if (e instanceof Error) {
-      sentry.captureException(e);
+      if (env.ENVIRONMENT === 'production') {
+        sentry.captureException(e);
+      }
     }
   }
 };
