@@ -1,6 +1,6 @@
 import { utcToZonedTime } from 'date-fns-tz';
 import { isHoliday } from '@holiday-jp/holiday_jp';
-import Toucan from 'toucan-js';
+import { Toucan } from 'toucan-js';
 import { formatDate, isBannedHour, isWeekend } from './date';
 import { filterValidTrigger, type Trigger } from './pair';
 import { SwitchBotClient } from './switchbot';
@@ -48,20 +48,19 @@ const initSentry = (sentryDsn: string, sentryClientId: string, sentryClientSecre
   new Toucan({
     dsn: sentryDsn,
     context,
-    allowedHeaders: [
-      'user-agent',
-      'cf-challenge',
-      'accept-encoding',
-      'accept-language',
-      'cf-ray',
-      'content-length',
-      'content-type',
-      'x-real-ip',
-      'host',
-    ],
-    allowedSearchParams: /(.*)/,
-    rewriteFrames: {
-      root: '/',
+    requestDataOptions: {
+      allowedHeaders: [
+        'user-agent',
+        'cf-challenge',
+        'accept-encoding',
+        'accept-language',
+        'cf-ray',
+        'content-length',
+        'content-type',
+        'x-real-ip',
+        'host',
+      ],
+      allowedSearchParams: /(.*)/,
     },
     transportOptions: {
       headers: {
@@ -69,7 +68,7 @@ const initSentry = (sentryDsn: string, sentryClientId: string, sentryClientSecre
         'CF-Access-Client-Secret': sentryClientSecret,
       },
     },
-    tracesSampleRate: 0.25,
+    sampleRate: 0.25,
   });
 
 const scheduled: Handler['scheduled'] = async (cont, env, context) => {
