@@ -1,6 +1,6 @@
 import { encode } from 'base64-arraybuffer';
 import { Buffer } from 'node:buffer';
-import { type AirConditionerCommand, meterStatus, controlCommandResponse } from './zodSchema';
+import { meterStatusResponse, type AirConditionerCommand, controlCommandResponse } from './zodSchema';
 import { HttpError } from './error';
 
 export class SwitchBotClient {
@@ -20,7 +20,7 @@ export class SwitchBotClient {
 
     return this.getRequest(path)
       .then(async (res) => res.json())
-      .then((data) => meterStatus.parse(data));
+      .then((data) => meterStatusResponse.parse(data).body);
   };
 
   turnOnAirConditioner = async (deviceId: string, settingTemp: number) => {

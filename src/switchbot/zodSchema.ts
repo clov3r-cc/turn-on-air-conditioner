@@ -1,10 +1,19 @@
-import { z } from 'zod';
+import { type ZodRawShape, z } from 'zod';
 
-export const meterStatus = z.object({
+const generateResponseSchema = (bodyObject: ZodRawShape) =>
+  z.object({
+    statusCode: z.number(),
+    message: z.string(),
+    body: z.object(bodyObject),
+  });
+
+const meterStatus = {
   deviceId: z.string(),
   deviceType: z.string(),
   temperature: z.number(),
-});
+};
+
+export const meterStatusResponse = generateResponseSchema(meterStatus);
 
 const airConditionerCommand = z.object({
   commandType: z.enum(['command']),
@@ -14,8 +23,4 @@ const airConditionerCommand = z.object({
 
 export type AirConditionerCommand = z.infer<typeof airConditionerCommand>;
 
-export const controlCommandResponse = z.object({
-  statusCode: z.number(),
-  messsage: z.string(),
-  body: z.object({}),
-});
+export const controlCommandResponse = generateResponseSchema({});
