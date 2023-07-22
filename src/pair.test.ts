@@ -27,9 +27,8 @@ describe('filterValidTrigger', () => {
     const lowerTempPair = TRIGGERS.find((p) => p.hour === HOUR);
     expect(lowerTempPair).toBeDefined();
 
-    const higherTempPair = { ...lowerTempPair! };
-    higherTempPair.temp = 100;
-    expect(higherTempPair.temp).not.toBe(lowerTempPair!.temp);
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const higherTempPair = { ...lowerTempPair!, temp: 100 };
 
     const map: readonly Trigger[] = [...TRIGGERS, higherTempPair];
     expect(filterValidTrigger(map, HOUR)).toContain(lowerTempPair);
