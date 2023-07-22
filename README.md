@@ -21,13 +21,15 @@
 - SwitchBot 温湿度計（温湿度計プラスでも可）
 - [Cloudflare](https://cloudflare.com)アカウント（Free Planでも可）
 - [Sentry](https://sentry.io)アカウント
+- Discordアカウント
 
 ## 実行準備と手順
 
 1. SwitchBotの設定を済ませ、ハブとエアコンを連携する
 1. [SwitchBotのアプリをスマートフォンにインストールして、APIトークンとクライアントシークレットの値を控える](https://github.com/OpenWonderLabs/SwitchBotAPI#getting-started)
 1. Cloudflare AccessのServiceTokenを取得して控える
-1. [.dev.vars.example](./.dev.vars.example)を`.dev.vars`に改名の上、先程取得したSwitchBotのAPIトークンとクライアントシークレット、CloudflareのServiceTokenを入力する
+1. 成功通知を送るDiscordのチャンネルを作成、Webhookを設定してそのURLを控える
+1. [.dev.vars.example](./.dev.vars.example)を`.dev.vars`に改名の上、先程取得したSwitchBotのAPIトークンとクライアントシークレット、CloudflareのServiceToken、DiscordのWebhook URLを入力する
 1. wranglerをインストール  
   ```npm install -g wrangler@2```
 1. Cloudflareにwranglerからログインする  
