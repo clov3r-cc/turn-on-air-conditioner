@@ -89,10 +89,10 @@ const scheduled: Handler['scheduled'] = async (cont, env, context) => {
     const isTempHigherThanTriggers = !!triggerTemps.find((triggerTemp) => actualTemp >= triggerTemp);
     if (!isTempHigherThanTriggers) return;
 
-    context.waitUntil(client.turnOnAirConditioner(env.AIR_CONDITIONER_DEVICE_ID, 28));
+    await client.turnOnAirConditioner(env.AIR_CONDITIONER_DEVICE_ID, 28);
     // 1日でKVに書き込んだものを削除
-    context.waitUntil(env.TURN_ON_AIR_CON_HISTORY.put(formattedDate, 'done!', { expirationTtl: 60 * 60 * 24 }));
-    context.waitUntil(notifyAirConditionerOnToDiscord(env.NOTIFICATION_WEBHOOK_URL, now, actualTemp));
+    await env.TURN_ON_AIR_CON_HISTORY.put(formattedDate, 'done!', { expirationTtl: 60 * 60 * 24 });
+    await notifyAirConditionerOnToDiscord(env.NOTIFICATION_WEBHOOK_URL, now, actualTemp);
   } catch (e: unknown) {
     if (e instanceof Error && env.NODE_ENV === 'production') {
       sentry.captureException(e);
