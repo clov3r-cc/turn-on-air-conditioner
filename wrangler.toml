@@ -1,9 +1,10 @@
 name = "turn-on-air-conditioner"
 main = "src/worker.ts"
-routes = [{ pattern = "air.celesteria.net/*", custom_domain = true }]
+compatibility_date = "2023-07-17"
+compatibility_flags = ["nodejs_compat"]
 # アカウントIDはシークレットな値ではない
 account_id = "fff06038a70892193e0fa1e9e270436a"
-compatibility_flags = ["nodejs_compat"]
+routes = [{ pattern = "air.celesteria.net/*", custom_domain = true }]
 kv_namespaces = [
   { binding = "HISTORY", id = "e3abe12e90ec4c88a9df7ae9042361ff", preview_id = "377c5b3ea5c34abc9767cb365ca769fe" }
 ]
