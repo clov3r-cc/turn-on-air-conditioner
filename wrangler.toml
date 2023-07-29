@@ -5,7 +5,7 @@ compatibility_date = "2023-05-15"
 account_id = "fff06038a70892193e0fa1e9e270436a"
 compatibility_flags = ["nodejs_compat"]
 kv_namespaces = [
-  { binding = "TURN_ON_AIR_CON_HISTORY", id = "bba089aad49e45ff9ec9937015b8b07f", preview_id = "1192062622004861a04c3348dea32915" }
+  { binding = "HISTORY", id = "e3abe12e90ec4c88a9df7ae9042361ff" }
 ]
 
 [vars]

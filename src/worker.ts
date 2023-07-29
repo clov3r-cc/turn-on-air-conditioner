@@ -7,7 +7,7 @@ import { SwitchBotClient } from './switchbot';
 import { notifyAirConditionerOnToDiscord } from './discord';
 
 export type Env = {
-  TURN_ON_AIR_CON_HISTORY: KVNamespace;
+  HISTORY: KVNamespace;
 
   // region wrangler.tomlに直接書き込まれている環境変数
   METER_DEVICE_ID: string;
@@ -79,7 +79,7 @@ const scheduled: Handler['scheduled'] = async (cont, env, context) => {
     if (isWeekend(now.getDay()) || isHoliday(now)) return;
     if (isBannedHour(now.getHours())) return;
     const formattedDate = formatDate(now);
-    if (await isAlreadyTurnedOnToday(formattedDate, env.TURN_ON_AIR_CON_HISTORY)) return;
+    if (await isAlreadyTurnedOnToday(formattedDate, env.HISTORY)) return;
 
     const triggerTemps = [...new Set(filterValidTrigger(TRIGGERS, now.getHours()).map((t) => t.temp))];
     if (triggerTemps.length === 0) return;
@@ -91,7 +91,7 @@ const scheduled: Handler['scheduled'] = async (cont, env, context) => {
 
     await client.turnOnAirConditioner(env.AIR_CONDITIONER_DEVICE_ID, 28);
     // 1日でKVに書き込んだものを削除
-    await env.TURN_ON_AIR_CON_HISTORY.put(formattedDate, 'done!', { expirationTtl: 60 * 60 * 24 });
+    await env.HISTORY.put(formattedDate, 'done!', { expirationTtl: 60 * 60 * 24 });
     await notifyAirConditionerOnToDiscord(env.NOTIFICATION_WEBHOOK_URL, now, actualTemp);
   } catch (e: unknown) {
     if (e instanceof Error && env.NODE_ENV === 'production') {
