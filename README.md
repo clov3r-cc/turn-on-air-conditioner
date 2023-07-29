@@ -37,8 +37,6 @@
 1. `wrangler whoami`を実行して表示されるCloudflareのアカウントIDを[wrangler.toml](./wrangler.toml)の`account_id`に入力する
 1. Cloudflare KVにnamespaceを作成  
   ```wrangler kv:namespace create "TURN_ON_AIR_CON_HISTORY"```
-1. Cloudflare KVにnamespaceを作成（デバッグ用なのでなくてもよい）  
-  ```wrangler kv:namespace create --preview "TURN_ON_AIR_CON_HISTORY"```
 1. デバイスの一覧から温湿度計（`Meter`）とエアコン（`Air Conditioner`）の`deviceId`を探し、[wrangler.toml](./wrangler.toml)の`METER_DEVICE_ID`と`AIR_CONDITIONER_DEVICE_ID`にそれぞれ入力する
 1. SentryのDSNをサイトから取得し、[wrangler.toml](./wrangler.toml)の`SENTRY_DSN`に入力する
 1. [worker.ts](./src/worker.ts)の中にある`TRIGGERS`の値を好きなように変更する
