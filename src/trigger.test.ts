@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { filterValidTrigger, type Trigger } from './pair';
+import { filterValidTrigger, type Trigger } from './trigger';
 
 const TRIGGERS: readonly Trigger[] = [
   { hour: 16, temp: 38 },

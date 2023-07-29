@@ -2,7 +2,7 @@ import { utcToZonedTime } from 'date-fns-tz';
 import { isHoliday } from '@holiday-jp/holiday_jp';
 import { Toucan } from 'toucan-js';
 import { formatDate, isBannedHour, isWeekend } from './date';
-import { filterValidTrigger, type Trigger } from './pair';
+import { filterValidTrigger, type Trigger } from './trigger';
 import { SwitchBotClient } from './switchbot';
 import { notifyAirConditionerOnToDiscord } from './discord';
 
