@@ -1,5 +1,6 @@
 name = "turn-on-air-conditioner"
 main = "src/worker.ts"
+routes = [{ pattern = "air.celesteria.net/*", custom_domain = true }]
 # アカウントIDはシークレットな値ではない
 account_id = "fff06038a70892193e0fa1e9e270436a"
 compatibility_flags = ["nodejs_compat"]
