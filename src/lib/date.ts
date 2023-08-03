@@ -1,4 +1,4 @@
-import { format } from 'date-fns-tz';
+import { parseISO, format } from 'date-fns';
 
 /**
  * 週末かどうかを判定する
@@ -25,3 +25,10 @@ export const isBannedHour = (hour: number) => hour >= 0 && hour <= 6;
  * @returns 'yyyy-MM-dd'形式にフォーマットした文字列
  */
 export const formatDate = (date: Date) => format(date, 'yyyy-MM-dd');
+
+/**
+ * 与えられた`Date`をUTC日時に変換する
+ * @param date 日時。タイムゾーンは問わない。
+ * @returns UTC日時。
+ */
+export const getUtcDate = (date: Date) => parseISO(date.toISOString());
