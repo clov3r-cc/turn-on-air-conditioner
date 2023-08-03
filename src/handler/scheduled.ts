@@ -1,7 +1,7 @@
 import { isHoliday } from '@holiday-jp/holiday_jp';
 import { utcToZonedTime } from 'date-fns-tz';
 import { TIME_ZONE, TRIGGERS } from '../lib/const';
-import { isWeekend, isBannedHour, formatDate } from '../lib/date';
+import { isWeekend, isBannedHour, formatDate, getUtcDate } from '../lib/date';
 import { notifyAirConditionerOnToDiscord } from '../lib/discord';
 import { initSentry } from '../lib/sentry';
 import { SwitchBotClient } from '../lib/switchbot';
@@ -20,7 +20,8 @@ export const scheduled: Handler['scheduled'] = async (cont, env, context) => {
   const sentry = initSentry(env.SENTRY_DSN, env.SENTRY_CLIENT_ID, env.SENTRY_CLIENT_SECRET, context);
 
   try {
-    const jstNow = utcToZonedTime(new Date(), TIME_ZONE);
+    const utcNow = getUtcDate(new Date());
+    const jstNow = utcToZonedTime(utcNow, TIME_ZONE);
     if (isWeekend(jstNow.getDay()) || isHoliday(jstNow)) return;
     if (isBannedHour(jstNow.getHours())) return;
     const formattedDate = formatDate(jstNow);
@@ -37,7 +38,7 @@ export const scheduled: Handler['scheduled'] = async (cont, env, context) => {
     await client.turnOnAirConditioner(env.AIR_CONDITIONER_DEVICE_ID, 28);
     // 1日でKVに書き込んだものを削除
     await env.HISTORY.put(formattedDate, 'done!', { expirationTtl: 60 * 60 * 24 });
-    await notifyAirConditionerOnToDiscord(env.NOTIFICATION_WEBHOOK_URL, jstNow, actualTemp);
+    await notifyAirConditionerOnToDiscord(env.NOTIFICATION_WEBHOOK_URL, utcNow, actualTemp);
   } catch (e: unknown) {
     if (e instanceof Error && env.NODE_ENV === 'production') {
       sentry.captureException(e);
