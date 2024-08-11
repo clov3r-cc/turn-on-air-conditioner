@@ -5,7 +5,7 @@ on:
       - main
 jobs:
   ci:
-    uses: Lucky3028/turn-on-air-conditioner/.github/workflows/ci.yaml@main
+    uses: clov3r-cc/turn-on-air-conditioner/.github/workflows/ci.yaml@main
   cd:
     name: Deploy to Cloudflare Workers
     runs-on: ubuntu-latest
