@@ -28,7 +28,7 @@
     "eslint-plugin-import": "^2.27.5",
     "prettier": "^3.0.0",
     "typescript": "^5.0.4",
-    "typesync": "^0.11.1",
+    "typesync": "^0.13.0",
     "vite": "^4.4.4",
     "vitest": "^0.34.0",
     "wrangler": "^3.0.0"
