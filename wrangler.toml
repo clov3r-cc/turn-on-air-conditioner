@@ -16,4 +16,4 @@ SENTRY_DSN = "https://a806b31ea1f54f39ac1f7526d1c20e98@sentry.celesteria.net/2"
 
 [triggers]
 # 15分ごとに実行する
-crons = ["*/15 * * * *"]
+crons = ["0 10 * * *"]
